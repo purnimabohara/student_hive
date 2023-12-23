@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:student_management_hive_api/features/course/presentation/view/add_course_view.dart';
+import 'package:student_management_hive_api/features/home/presentation/state/home_state.dart';
 import 'package:student_management_hive_api/features/home/presentation/view/bottom_view/dashboard_view.dart';
 import 'package:student_management_hive_api/features/home/presentation/view/bottom_view/profile_view.dart';
+import 'package:student_management_hive_api/features/home/presentation/viewmodel/home_view_model.dart';
 
 import '../../../batch/presentation/view/add_batch_view.dart';
 
@@ -14,17 +16,12 @@ class HomeView extends ConsumerStatefulWidget {
 }
 
 class _HomeViewState extends ConsumerState<HomeView> {
-  int selectedIndex = 0;
-  List<Widget> lstScreen = [
-    const DashboardView(),
-    const AddCourseView(),
-    const AddBatchView(),
-    const ProfileView(),
-  ];
+  
   @override
   Widget build(BuildContext context) {
+    final HomeState=ref.watch(homeViewModelProvider);
     return Scaffold(
-      body: lstScreen[selectedIndex],
+      body: HomeState.lstWidget[HomeState.index],
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
@@ -48,13 +45,11 @@ class _HomeViewState extends ConsumerState<HomeView> {
             label: 'Location',
           ),
         ],
-        currentIndex: selectedIndex,
+        currentIndex: HomeState.index,
         onTap: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
-      ),
-    );
-  }
-}
+          ref.read(homeViewModelProvider.notifier).changeIndex(index);
+       
+          },),
+        
+      );
+  }}
